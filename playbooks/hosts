@@ -1,0 +1,21 @@
+all:
+  vars:
+    remote_user: ansible
+  hosts:
+  children:
+    l_space_secrets:
+    docker:
+      children:
+        docker_managers:
+          hosts:
+            additives.l-space.local:
+              ansible_host: 192.168.178.112
+            peaches.l-space.local:
+              ansible_host: 192.168.178.111
+            hamnpork.l-space.local:
+              ansible_host: 192.168.178.113
+        docker_workers:
+          hosts:
+            sardines.l-space.local:
+              ansible_host: 192.168.178.114
+            
