@@ -4,6 +4,8 @@ all:
   hosts:
   children:
     l_space_secrets:
+      children:
+        
     docker:
       children:
         docker_managers:
@@ -18,4 +20,9 @@ all:
           hosts:
             sardines.l-space.local:
               ansible_host: 192.168.178.114
-            
+            bigsavings.l-space.local:
+              ansible_host: 192.168.178.115
+            darktan.l-space.local:
+              ansible_host: 192.168.178.116
+            kidney.l-space.local:
+              ansible_host: 192.168.178.117
