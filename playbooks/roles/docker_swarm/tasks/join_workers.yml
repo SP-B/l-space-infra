@@ -1,0 +1,4 @@
+---
+- name: Debug join_workers
+  debug:
+    var: join_token

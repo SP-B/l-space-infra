@@ -1,0 +1,42 @@
+---
+# Gather information on the current configuration of Docker hosts
+# Results are storing in a temporary inventory
+- name: Gather swarm info
+  include: gather_swarm_info.yml
+
+# If there are no active managers found, there can't be an active swarm
+- name: Initialize swarm
+  include:  initialize_swarm.yml
+  when: "'docker_swarm_managers_active' not in groups"
+  run_once: true
+
+- name: Join new managers to swarm
+  include_tasks: join_swarm.yml
+  vars:
+    join_token: "{{hostvars[groups['docker_swarm_managers_active'][0]]['docker_info']['swarm_facts']['JoinTokens']['Manager']}}"
+    remote_addrs: "{{hostvars[groups['docker_swarm_managers_active'][0]]['ansible_default_ipv4']['address']}}"
+  when: 
+    - inventory_hostname in groups['docker_swarm_managers']
+    - docker_info['docker_swarm_active'] == false
+    - docker_info['docker_swarm_manager'] == false
+
+- name: Join new workers to swarm
+  include_tasks: join_swarm.yml
+  vars:
+    join_token: "{{hostvars[groups['docker_swarm_managers_active'][0]]['docker_info']['swarm_facts']['JoinTokens']['Worker']}}"
+    remote_addrs: "{{hostvars[groups['docker_swarm_managers_active'][0]]['ansible_default_ipv4']['address']}}"
+  when: 
+    - inventory_hostname in groups['docker_swarm_workers']
+    - docker_info['docker_swarm_active'] == false
+
+- name: Demote swarm manager nodes
+  include_tasks: demote_managers.yml
+  when:
+    - inventory_hostname == groups['docker_swarm_managers_active'][0]
+    - groups['docker_swarm_managers_to_demote'] is defined
+
+- name: Demote swarm worker nodes
+  include_tasks: promote_workers.yml
+  when:
+    - inventory_hostname == groups['docker_swarm_managers_active'][0]
+    - groups['docker_swarm_workers_to_promote'] is defined

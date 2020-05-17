@@ -1,0 +1,14 @@
+---
+# - name: Deploy Docker
+#   hosts: docker
+#   become: true
+#   gather_facts: true
+#   roles:
+#    - role: docker
+# 
+- name: Deploy Docker managers
+  hosts: docker
+  become: true
+  gather_facts: true
+  roles:
+    - role: docker_swarm

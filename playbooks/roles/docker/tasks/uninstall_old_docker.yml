@@ -1,0 +1,10 @@
+---
+- name: Uninstall old versions of Docker
+  apt:
+    pkg:
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+    state: absent

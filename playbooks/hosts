@@ -3,26 +3,23 @@ all:
     remote_user: ansible
   hosts:
   children:
-    l_space_secrets:
-      children:
-        
     docker:
       children:
-        docker_managers:
+        docker_swarm_managers:
           hosts:
-            additives.l-space.local:
+            additives:
               ansible_host: 192.168.178.112
-            peaches.l-space.local:
+            peaches:
               ansible_host: 192.168.178.111
-            hamnpork.l-space.local:
+            hamnpork:
               ansible_host: 192.168.178.113
-        docker_workers:
+        docker_swarm_workers:
           hosts:
-            sardines.l-space.local:
+            sardines:
               ansible_host: 192.168.178.114
-            bigsavings.l-space.local:
+            bigsavings:
               ansible_host: 192.168.178.115
-            darktan.l-space.local:
+            darktan:
               ansible_host: 192.168.178.116
-            kidney.l-space.local:
+            kidney:
               ansible_host: 192.168.178.117

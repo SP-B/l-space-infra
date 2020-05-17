@@ -1,0 +1,6 @@
+---
+- name: Promote docker_swarm_workers that are currently manager
+  docker_node:
+    hostname: "{{item}}"
+    role: worker
+  loop: "{{groups['docker_swarm_workers_to_promote']}}"

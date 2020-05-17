@@ -1,0 +1,33 @@
+---
+# Run docker_swarm_info on all hosts in docker_swarm_managers
+# Register the result for further analysis
+
+- name: Get Docker swarm info
+  docker_swarm_info:
+    nodes: true
+  register: docker_info
+  ignore_errors: true
+
+- name: Group docker_swarm_managers that are currently worker
+  add_host:
+    name: "{{item}}"
+    groups: docker_swarm_workers_to_promote
+  loop: "{{groups['docker_swarm_managers']}}"
+  when: 
+    - hostvars[item]['docker_info']['docker_swarm_active'] == true
+    - hostvars[item]['docker_info']['docker_swarm_manager'] == false
+
+- name: Group docker_swarm_managers that are currently manager
+  add_host:
+    name: "{{item}}"
+    groups: docker_swarm_managers_active
+  loop: "{{groups['docker_swarm_managers']}}"
+  when: hostvars[item]['docker_info']['docker_swarm_manager'] == true
+
+- name: Group docker_swarm_workers that are currently manager
+  add_host:
+    name: "{{item}}"
+    groups: docker_swarm_managers_to_demote
+    docker_swarm_id: "{{hostvars[item]['docker_info']['swarm_facts']['ID']}}"
+  loop: "{{groups['docker_swarm_workers']}}"
+  when: hostvars[item]['docker_info']['docker_swarm_manager'] == true

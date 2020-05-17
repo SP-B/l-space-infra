@@ -1,0 +1,17 @@
+---
+- name: Initialize swarm
+  docker_swarm:
+    state: present
+
+- name: Get Docker swarm info
+  docker_swarm_info:
+    nodes: false
+  register: new_swarm_info
+
+- name: Group docker_swarm_managers after initialization
+  add_host:
+    name: "{{ansible_hostname}}"
+    groups: docker_swarm_managers_active
+    docker_swarm_id: "{{new_swarm_info['swarm_facts']['ID']}}"
+    docker_swarm_manager_join_token: "{{new_swarm_info['swarm_facts']['JoinTokens']['Manager']}}"
+    docker_swarm_worker_join_token: "{{new_swarm_info['swarm_facts']['JoinTokens']['Worker']}}"

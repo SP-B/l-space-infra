@@ -1,0 +1,7 @@
+---
+# Based on https://docs.docker.com/engine/install/ubuntu/
+- name: Uninstall old versions of Docker
+  include: uninstall_old_docker.yml
+
+- name: Install docker
+  include: install.yml
