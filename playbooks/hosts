@@ -2,24 +2,33 @@ all:
   vars:
     remote_user: ansible
   hosts:
+    additives:
+      ansible_host: 192.168.178.112
+    peaches:
+      ansible_host: 192.168.178.111
+    hamnpork:
+      ansible_host: 192.168.178.113
+    sardines:
+      ansible_host: 192.168.178.114
+    bigsavings:
+      ansible_host: 192.168.178.115
+    darktan:
+      ansible_host: 192.168.178.116
+    kidney:
+      ansible_host: 192.168.178.117
   children:
     docker:
       children:
         docker_swarm_managers:
           hosts:
             additives:
-              ansible_host: 192.168.178.112
             peaches:
-              ansible_host: 192.168.178.111
             hamnpork:
-              ansible_host: 192.168.178.113
         docker_swarm_workers:
           hosts:
             sardines:
-              ansible_host: 192.168.178.114
             bigsavings:
-              ansible_host: 192.168.178.115
             darktan:
-              ansible_host: 192.168.178.116
             kidney:
-              ansible_host: 192.168.178.117
+
+    
