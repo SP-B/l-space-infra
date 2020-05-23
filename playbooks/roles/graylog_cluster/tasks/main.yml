@@ -1,0 +1,20 @@
+---
+- name: Setup Docker Swarm secrets
+  include_tasks: setup_swarm_secrets.yml
+
+- name: Install prerequisites
+  include_tasks: docker_stack_prerequisites.yml
+
+- name: Tag Docker nodes
+  include_tasks: tag_docker_nodes.yml
+  run_once: true
+
+- name: Deploy MongoDB to Graylog cluster
+  include_tasks: docker_stack_mongodb.yml
+  run_once: true
+
+- name: Deploy Elasticsearch to Graylog cluster
+  include_tasks: docker_stack_elasticsearch.yml
+
+- name: Deploy Graylog to Graylog cluster
+  include_tasks: docker_stack_graylog.yml

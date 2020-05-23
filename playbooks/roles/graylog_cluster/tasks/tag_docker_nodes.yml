@@ -1,0 +1,7 @@
+---
+- name: Tag Docker nodes
+  docker_node:
+    hostname: "{{item}}"
+    labels:
+      graylog_cluster_role: mongodb
+  loop: "{{groups['mongodb_docker_nodes']}}"

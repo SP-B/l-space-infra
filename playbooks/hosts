@@ -30,5 +30,10 @@ all:
             bigsavings:
             darktan:
             kidney:
+    mongodb_docker_nodes:
+      hosts:
+        additives:
+        peaches:
+        hamnpork:
 
     

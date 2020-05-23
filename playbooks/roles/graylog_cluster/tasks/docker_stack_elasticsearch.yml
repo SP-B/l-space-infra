@@ -1,0 +1,4 @@
+---
+- name: No Elasticsearch atm
+  debug:
+    msg: Nothing yet

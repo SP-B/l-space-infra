@@ -1,0 +1,37 @@
+---
+- name: Configure MongoDB in Graylog Stack
+  docker_stack:
+    name: graylog_stack
+    state: present
+    compose:
+      - version: "3.2"
+        services:
+          mongo:
+            image: mongo:4.0
+            environment:
+              MONGO_INITDB_ROOT_USERNAME: "{{graylog_stack_mongo_root_username}}"
+              MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/graylog_stack_mongo_root_password
+            networks:
+              - backend-network
+            volumes:
+              - type: volume
+                source: mongodb-data
+                target: /data/db
+            secrets:
+              - graylog_stack_mongo_root_password
+            deploy:
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_role == mongodb
+              replicas: 3
+              endpoint_mode: dnsrr
+              mode: replicated
+              update_config:
+                delay: 30s
+        networks:
+          backend-network:
+        volumes:
+          mongodb-data:
+        secrets:
+          graylog_stack_mongo_root_password:
+            external: true
