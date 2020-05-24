@@ -1,6 +1,6 @@
 ---
 - name: Deploy Graylog cluster
-  hosts: mongodb_docker_nodes
+  hosts: docker
   become: true
   gather_facts: true
   roles:

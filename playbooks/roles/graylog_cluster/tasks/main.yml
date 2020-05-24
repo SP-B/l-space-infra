@@ -1,9 +1,10 @@
 ---
-- name: Setup Docker Swarm secrets
-  include_tasks: setup_swarm_secrets.yml
-
 - name: Install prerequisites
   include_tasks: docker_stack_prerequisites.yml
+
+- name: Setup Docker Swarm secrets
+  include_tasks: setup_swarm_secrets.yml
+  run_once: true
 
 # Because of a Docker Swarm issue DNS can't be used to resolve other containers
 # within a Swarm service. See https://github.com/docker/swarmkit/issues/1242

@@ -1,2 +1,0 @@
-graylog_stack_mongo_root_username: mongoroot
-graylog_stack_mongo_root_password: "{{graylog_stack_mongo_root_password_secret}}"

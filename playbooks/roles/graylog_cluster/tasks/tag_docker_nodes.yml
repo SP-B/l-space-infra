@@ -1,8 +1,11 @@
 ---
+# group_vars example:
+# graylog_stack_mongod_nodes:
+#  docker_service: docker_hostname
 
 - name: Tag Docker nodes
   docker_node:
-    hostname: "{{item}}"
+    hostname: "{{item.value}}"
     labels:
-      graylog_cluster_mongodb_role: "{{hostvars[item]['graylog_cluster_mongodb_role']}}"
-  loop: "{{groups['mongodb_docker_nodes']}}"
+      graylog_cluster_mongodb_role: "{{item.key}}"
+  loop: "{{graylog_stack_mongod_nodes|dict2items}}"
