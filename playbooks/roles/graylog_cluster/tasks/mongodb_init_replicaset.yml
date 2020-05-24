@@ -1,0 +1,16 @@
+---
+- name: Debug mongodb docker nodes
+  debug:
+    var: groups['mongodb_docker_nodes']
+
+- name: Concatenate list of MongoDB nodes
+  set_fact:
+    mongo_replicaset_members: "{{item | join(',')}}"
+
+- name: Initialize replicaset
+  mongodb_replicaset:
+    login_host: "{{ansible_hostname}}"
+    login_user: "{{graylog_stack_mongo_root_username}}"
+    login_password: "{{graylog_stack_mongo_root_password}}"
+    replica_set: graylog_rs0
+    members: "{{groups['mongodb_docker_nodes']}}"

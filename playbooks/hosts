@@ -33,7 +33,10 @@ all:
     mongodb_docker_nodes:
       hosts:
         additives:
+          graylog_cluster_mongodb_role: mongod-1
         peaches:
+          graylog_cluster_mongodb_role: mongod-2
         hamnpork:
+          graylog_cluster_mongodb_role: mongod-3
 
     

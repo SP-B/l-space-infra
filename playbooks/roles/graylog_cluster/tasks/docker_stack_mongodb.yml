@@ -4,34 +4,95 @@
     name: graylog_stack
     state: present
     compose:
-      - version: "3.2"
+      - version: "3.7"
         services:
-          mongo:
+          mongod-1:
             image: mongo:4.0
+            command: >
+              --replSet "graylog_rs0"
+              --bind_ip_all
             environment:
               MONGO_INITDB_ROOT_USERNAME: "{{graylog_stack_mongo_root_username}}"
               MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/graylog_stack_mongo_root_password
             networks:
-              - backend-network
+              backend-network:
+            ports:
+              - target: 27017
+                published: 27017
+                mode: host
             volumes:
               - type: volume
-                source: mongodb-data
+                source: mongod-1-data
                 target: /data/db
             secrets:
               - graylog_stack_mongo_root_password
             deploy:
               placement:
                 constraints:
-                  - node.labels.graylog_cluster_role == mongodb
-              replicas: 3
-              endpoint_mode: dnsrr
+                  - node.labels.graylog_cluster_mongodb_role == mongod-1
               mode: replicated
-              update_config:
-                delay: 30s
+              replicas: 1
+              endpoint_mode: dnsrr
+          mongod-2:
+            image: mongo:4.0
+            command: >
+              --replSet "graylog_rs0"
+              --bind_ip_all
+            environment:
+              MONGO_INITDB_ROOT_USERNAME: "{{graylog_stack_mongo_root_username}}"
+              MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/graylog_stack_mongo_root_password
+            networks:
+              backend-network:
+            ports:
+              - target: 27017
+                published: 27017
+                mode: host
+            volumes:
+              - type: volume
+                source: mongod-2-data
+                target: /data/db
+            secrets:
+              - graylog_stack_mongo_root_password
+            deploy:
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_mongodb_role == mongod-2
+              mode: replicated
+              replicas: 1
+              endpoint_mode: dnsrr
+          mongod-3:
+            image: mongo:4.0
+            command: >
+              --replSet "graylog_rs0"
+              --bind_ip_all
+            environment:
+              MONGO_INITDB_ROOT_USERNAME: "{{graylog_stack_mongo_root_username}}"
+              MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/graylog_stack_mongo_root_password
+            networks:
+              backend-network:
+            ports:
+              - target: 27017
+                published: 27017
+                mode: host
+            volumes:
+              - type: volume
+                source: mongod-3-data
+                target: /data/db
+            secrets:
+              - graylog_stack_mongo_root_password
+            deploy:
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_mongodb_role == mongod-3
+              mode: replicated
+              replicas: 1
+              endpoint_mode: dnsrr
         networks:
           backend-network:
         volumes:
-          mongodb-data:
+          mongod-1-data:
+          mongod-2-data:
+          mongod-3-data:
         secrets:
           graylog_stack_mongo_root_password:
             external: true

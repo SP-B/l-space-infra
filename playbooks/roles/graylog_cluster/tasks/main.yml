@@ -5,6 +5,13 @@
 - name: Install prerequisites
   include_tasks: docker_stack_prerequisites.yml
 
+# Because of a Docker Swarm issue DNS can't be used to resolve other containers
+# within a Swarm service. See https://github.com/docker/swarmkit/issues/1242
+# To work around this, the MongoDB Service is split in 3 parts (mongod-1,
+# mongod-2 and mongod-3) and tags are used to limit placement of each service
+# on a specific Docker Swarm node. Which service goes where is controlled using
+# the graylog_cluster_mongodb_role variable in the inventory.
+
 - name: Tag Docker nodes
   include_tasks: tag_docker_nodes.yml
   run_once: true
@@ -13,8 +20,12 @@
   include_tasks: docker_stack_mongodb.yml
   run_once: true
 
-- name: Deploy Elasticsearch to Graylog cluster
-  include_tasks: docker_stack_elasticsearch.yml
+- name: Initialize replicaset
+  include_tasks: mongodb_init_replicaset.yml
+  run_once: true
 
-- name: Deploy Graylog to Graylog cluster
-  include_tasks: docker_stack_graylog.yml
+# - name: Deploy Elasticsearch to Graylog cluster
+#   include_tasks: docker_stack_elasticsearch.yml
+#
+# - name: Deploy Graylog to Graylog cluster
+#   include_tasks: docker_stack_graylog.yml
