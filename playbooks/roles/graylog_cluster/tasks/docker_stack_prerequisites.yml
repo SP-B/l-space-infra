@@ -1,0 +1,6 @@
+---
+- name: Install docker_stack prerequisites
+  pip:
+    name: 
+      - jsondiff
+      - pymongo

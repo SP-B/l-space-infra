@@ -1,0 +1,4 @@
+---
+- name: No Graylog atm
+  debug:
+    msg: Nothing yet

@@ -1,0 +1,27 @@
+---
+- name: Install Ntop prerequisites
+  apt:
+    name:
+      - software-properties-common
+      - wget
+    state: present
+
+
+- name: Install Ntop repository
+  apt:
+    deb: http://apt-stable.ntop.org/20.04/all/apt-ntop-stable.deb
+
+- name: Install Ntop
+  apt:
+    name:
+      - pfring-dkms
+      - nprobe
+      - ntopng
+      - n2disk
+      - cento
+
+- name: Enable Ntop daemon
+  systemd:
+    name: ntopng
+    enabled: true
+    state: started

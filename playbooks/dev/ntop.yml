@@ -1,0 +1,6 @@
+- name: Deploy Graylog cluster
+  hosts: ntop
+  become: true
+  gather_facts: true
+  roles:
+    - role: ntop

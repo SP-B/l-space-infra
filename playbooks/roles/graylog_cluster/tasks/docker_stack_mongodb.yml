@@ -1,0 +1,118 @@
+---
+- name: Configure MongoDB in Graylog Stack
+  docker_stack:
+    name: graylog_stack
+    state: present
+    compose:
+      - version: "3.7"
+        services:
+          mongod-1:
+            image: mongo:4.0
+            command: >
+              --replSet "graylog_rs0"
+              --bind_ip_all
+              --keyFile "/run/secrets/graylog_stack_mongod_keyfile"
+            environment:
+              MONGO_INITDB_ROOT_USERNAME: "{{graylog_stack_mongo_root_username}}"
+              MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/graylog_stack_mongo_root_password
+            networks:
+              backend-network:
+            ports:
+              - target: 27017
+                published: 27017
+                mode: host
+            volumes:
+              - type: volume
+                source: mongod-1-data
+                target: /data/db
+            secrets:
+              - graylog_stack_mongo_root_password
+              - source: graylog_stack_mongod_keyfile
+                target: graylog_stack_mongod_keyfile
+                uid: '999'
+                gid: '999'
+                mode: 0400
+            deploy:
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_mongodb_role == mongod-1
+              mode: replicated
+              replicas: 1
+              endpoint_mode: dnsrr
+          mongod-2:
+            image: mongo:4.0
+            command: >
+              --replSet "graylog_rs0"
+              --bind_ip_all
+              --keyFile "/run/secrets/graylog_stack_mongod_keyfile"
+            environment:
+              MONGO_INITDB_ROOT_USERNAME: "{{graylog_stack_mongo_root_username}}"
+              MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/graylog_stack_mongo_root_password
+            networks:
+              backend-network:
+            ports:
+              - target: 27017
+                published: 27017
+                mode: host
+            volumes:
+              - type: volume
+                source: mongod-2-data
+                target: /data/db
+            secrets:
+              - graylog_stack_mongo_root_password
+              - source: graylog_stack_mongod_keyfile
+                target: graylog_stack_mongod_keyfile
+                uid: '999'
+                gid: '999'
+                mode: 0400
+            deploy:
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_mongodb_role == mongod-2
+              mode: replicated
+              replicas: 1
+              endpoint_mode: dnsrr
+          mongod-3:
+            image: mongo:4.0
+            command: >
+              --replSet "graylog_rs0"
+              --bind_ip_all
+              --keyFile "/run/secrets/graylog_stack_mongod_keyfile"
+            environment:
+              MONGO_INITDB_ROOT_USERNAME: "{{graylog_stack_mongo_root_username}}"
+              MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/graylog_stack_mongo_root_password
+            networks:
+              backend-network:
+            ports:
+              - target: 27017
+                published: 27017
+                mode: host
+            volumes:
+              - type: volume
+                source: mongod-3-data
+                target: /data/db
+            secrets:
+              - graylog_stack_mongo_root_password
+              - source: graylog_stack_mongod_keyfile
+                target: graylog_stack_mongod_keyfile
+                uid: '999'
+                gid: '999'
+                mode: 0400
+            deploy:
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_mongodb_role == mongod-3
+              mode: replicated
+              replicas: 1
+              endpoint_mode: dnsrr
+        networks:
+          backend-network:
+        volumes:
+          mongod-1-data:
+          mongod-2-data:
+          mongod-3-data:
+        secrets:
+          graylog_stack_mongo_root_password:
+            external: true
+          graylog_stack_mongod_keyfile:
+            external: true

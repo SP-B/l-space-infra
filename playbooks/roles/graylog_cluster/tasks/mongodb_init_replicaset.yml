@@ -1,0 +1,8 @@
+---
+- name: Initialize replicaset
+  mongodb_replicaset:
+    login_host: "{{ansible_hostname}}"
+    login_user: "{{graylog_stack_mongo_root_username}}"
+    login_password: "{{graylog_stack_mongo_root_password}}"
+    replica_set: graylog_rs0
+    members: "{{graylog_stack_mongod_nodes.keys()|join(',')}}"
