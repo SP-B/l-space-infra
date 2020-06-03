@@ -1,4 +1,127 @@
 ---
-- name: No Elasticsearch atm
-  debug:
-    msg: Nothing yet
+- name: Configure Elasticsearch in Graylog Stack
+  docker_stack:
+    name: graylog_stack
+    state: present
+    compose:
+      - version: "3.7"
+        x-es-image:
+          &es-image
+          elasticsearch:6.8.9
+        x-es-environment_master:
+          &es-environment_master
+          - cluster.name=graylog-cluster
+          - bootstrap.memory_lock=false
+          - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+          - node.master=true
+        x-es-limits:
+          &es-ulimits
+          memlock:
+            soft: -1
+            hard: -1
+        x-es-networks:
+          &es-networks
+          esnet:
+        x-es-ports:
+          &es-ports
+          - target: 9200
+            published: 9200
+            mode: host
+        x-es-deploy:
+          &es-deploy
+          placement:
+            constraints:
+          mode: replicated
+          replicas: 1
+          endpoint_mode: dnsrr
+        services:
+          esmaster-1:
+            image: *es-image
+            environment: *es-environment_master
+            ulimits:
+              memlock:
+                soft: -1
+                hard: -1
+            networks: *es-networks
+            volumes:
+              - esmaster-1:/usr/share/elasticsearch/data
+            ports: *es-ports
+            deploy:
+              << : *es-deploy
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_elasticsearch_role == esmaster-1
+          esmaster-2:
+            image: *es-image
+            environment: *es-environment_master
+            ulimits: *es-ulimits
+            networks: *es-networks
+            volumes:
+              - esmaster-2:/usr/share/elasticsearch/data
+            ports: *es-ports
+            deploy:
+              << : *es-deploy
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_elasticsearch == esmaster-2
+          esmaster-3:
+            image: *es-image
+            environment: *es-environment_master
+            ulimits: *es-ulimits
+            networks: *es-networks
+            volumes:
+              - esmaster-2:/usr/share/elasticsearch/data
+            ports: *es-ports
+            deploy:
+              << : *es-deploy
+              placement:
+                constraints:
+                  - node.labels.graylog_cluster_elasticsearch == esmaster-3
+#           esdata-1:
+#             image: *es-image
+#             environment: *es-environment_master
+#             ulimits: *es-ulimits
+#             networks: *es-networks
+#             volumes:
+#               - esdata-1:/usr/share/elasticsearch/data
+#             ports: *es-ports
+#             deploy:
+#               << : *es-deploy
+#               placement:
+#                 constraints:
+#                   - node.labels.graylog_cluster_es_role == esdata-1
+#           esdata-2:
+#             image: *es-image
+#             environment: *es-environment_master
+#             ulimits: *es-ulimits
+#             networks: *es-networks
+#             volumes:
+#               - esdata-2:/usr/share/elasticsearch/data
+#             ports: *es-ports
+#             deploy:
+#               << : *es-deploy
+#               placement:
+#                 constraints:
+#                   - node.labels.graylog_cluster_es_role == esdata-2
+#           esdata-3:
+#             image: *es-image
+#             environment: *es-environment_master
+#             ulimits: *es-ulimits
+#             networks: *es-networks
+#             volumes:
+#               - esdata-3:/usr/share/elasticsearch/data
+#             ports: *es-ports
+#             deploy:
+#               << : *es-deploy
+#               placement:
+#                 constraints:
+#                   - node.labels.graylog_cluster_es_role == esdata-3
+        volumes:
+          esmaster-1:
+          esmaster-2:
+          esmaster-3:
+          esdata-1:
+          esdata-2:
+          esdata-3:
+        networks:
+          esnet:

@@ -1,0 +1,11 @@
+---
+# group_vars example:
+# graylog_stack_mongod_nodes:
+#  docker_service: docker_hostname
+
+- name: Tag Elasticsearch nodes
+  docker_node:
+    hostname: "{{item.value}}"
+    labels:
+      graylog_cluster_elasticsearch_role: "{{item.key}}"
+  loop: "{{graylog_stack_elasticsearch_nodes|dict2items}}"

@@ -5,3 +5,7 @@ graylog_stack_mongod_nodes:
   mongod-1: additives
   mongod-2: peaches
   mongod-3: hamnpork
+graylog_stack_elasticsearch_nodes:
+  esmaster-1: additives
+  esmaster-2: peaches
+  esmaster-3: hamnpork

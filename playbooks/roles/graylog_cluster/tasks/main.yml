@@ -25,8 +25,20 @@
   include_tasks: mongodb_init_replicaset.yml
   run_once: true
 
-# - name: Deploy Elasticsearch to Graylog cluster
-#   include_tasks: docker_stack_elasticsearch.yml
-#
+- name: Tag Elasticsearch nodes
+  include_tasks: tag_elasticsearch_nodes.yml
+  run_once: true
+
+- name: Adjust Docker host OS parameters
+  include_tasks: docker_stack_es_host_parameters.yml
+
+# - name: Setup Docker Swarm configs for Elasticsearch
+#   include_tasks: setup_swarm_es_configs.yml
+#   run_once: true
+
+- name: Deploy Elasticsearch to Graylog cluster
+  include_tasks: docker_stack_elasticsearch.yml
+  run_once: true
+
 # - name: Deploy Graylog to Graylog cluster
 #   include_tasks: docker_stack_graylog.yml

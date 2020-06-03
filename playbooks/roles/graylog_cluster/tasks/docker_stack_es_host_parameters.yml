@@ -1,0 +1,12 @@
+---
+- name: Copy Sysctl file for Elasticsearch host parameters
+  copy:
+    src: 20-docker-elasticsearch.conf
+    dest: /etc/sysctl.d/
+  register: es_host_parameters_result
+
+- name: Reload procps service
+  service:
+    name: procps
+    state: restarted
+  when: es_host_parameters_result.changed
