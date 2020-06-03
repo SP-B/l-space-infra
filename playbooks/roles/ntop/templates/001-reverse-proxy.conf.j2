@@ -1,7 +1,3 @@
-<IfModule mod_auth_radius.c>
-AuthRadiusCookieValid 120
-</IfModule>
-
 {% for vhost in virtualhosts %}
 <VirtualHost *:{{ vhost.proxy_settings.virtualhostport }}>
     ServerName {{ vhost.servername }}
@@ -17,19 +13,6 @@ AuthRadiusCookieValid 120
 
     ProxyPass "/" "http://127.0.0.1:{{ vhost.proxy_settings.port }}/"
     ProxyPassReverse "/" "http://127.0.0.1:{{ vhost.proxy_settings.port }}/"
-
-    AddRadiusAuth {{ vhost.radius_server_address }}:1812 {{ vhost.radius_server_secret }} 5:3
-
-    <Location />
-        AuthType Basic
-        AuthName Oxidized
-        #AuthBasicAuthoritative off
-        AuthBasicProvider radius
-        #AuthRadiusAuthoritative on
-        #AddRadiusCallingStationID srv-oxidized01
-        AuthRadiusActive On
-        Require valid-user
-    </Location>
     {% endif %}
 
     {% if vhost.redirect_to_https is defined %}

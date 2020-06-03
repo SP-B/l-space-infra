@@ -19,20 +19,32 @@
 - name: Copy server certificate
   copy:
     src: ntop.l-space.local.crt
-    dest: "{{virtualhosts.tls.server_certificate_path}}"
-    mode: "0640"
+    dest: "{{item.tls.server_certificate_path}}"
+    mode: "0644"
     owner: "root"
     group: "root"
-  when: virtualhosts.tls is defined
+  loop: "{{virtualhosts}}"
+  when: item.tls is defined
 
 - name: Copy server certificate key
   copy:
     src: ntop.l-space.local.key
-    dest: "{{virtualhosts.tls.server_certificate_path}}"
-    mode: "0640"
+    dest: "{{item.tls.server_key_path}}"
+    mode: "0644"
     owner: "root"
     group: "root"
-  when: virtualhosts.tls is defined
+  loop: "{{virtualhosts}}"
+  when: item.tls is defined
+
+- name: Copy intermediate certificate
+  copy:
+    src: signing-ca.crt
+    dest: "{{item.tls.intermediate_certificate_path}}"
+    mode: "0644"
+    owner: "root"
+    group: "root"
+  loop: "{{virtualhosts}}"
+  when: item.tls is defined
 
 - name: create general config file
   template:
@@ -48,4 +60,6 @@
   loop:
     - ssl.load
     - rewrite.load
+    - proxy_uwsgi.load
+    - proxy_http.load
   notify: restart apache
