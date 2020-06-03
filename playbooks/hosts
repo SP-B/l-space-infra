@@ -32,5 +32,8 @@ all:
             bigsavings:
             darktan:
             kidney:
+    ntop:
+      hosts:
+        inbrine:
 
     
