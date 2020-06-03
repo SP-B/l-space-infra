@@ -1,0 +1,11 @@
+es_users:
+  native:
+    elastic:
+      username: elastic
+      password: "{{es_users_secrets.native.elastic.password}}"
+      roles:
+        - admin
+    kibana_user:
+      password: "{{es_users_secrets.native.kibana_user.password}}"
+      roles:
+        - superuser

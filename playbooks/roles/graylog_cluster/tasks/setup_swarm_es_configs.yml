@@ -1,0 +1,10 @@
+---
+- name: Setup Docker Swarm configs for Elasticsearch master nodes
+  docker_config:
+    name: es_master_config
+    data: "{{ lookup('template','es_master.j2')}}"
+
+- name: Setup Docker Swarm configs for Elasticsearch data nodes
+  docker_config:
+    name: es_data_config
+    data: "{{ lookup('template','es_data.j2')}}"

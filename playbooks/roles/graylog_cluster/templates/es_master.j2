@@ -1,0 +1,26 @@
+es_version: 6.5.8
+es_api_host: "{{inventory_hostname}}"
+es_api_basic_auth_username: "{{es_users.native.elastic.password}}}"
+es_api_basic_auth_password: "{{es_users.native.elastic.username}}"
+
+{# We're not using TLS right now #}
+{# es_ssl_verification_mode: full #}
+{# es_enable_http_ssl: true #}
+{# es_enable_transport_ssl: true #}
+{# es_ssl_key: elasticsearch.key #}
+{# es_ssl_certificate: elasticsearch.pem #}
+
+es_heap_size: 2g
+
+es_config:
+  {# node.name: "{{some label}}" #}
+  node.data: false
+  node.master: true
+  node.ingest: false
+  cluster.name: "LSpace_elasticsearch"
+  {# discovery.zen.ping.unicast.hosts: "{{list_of_master nodes}}" #}
+  discovery.zen.minimum_master_nodes: 2
+  network.host: 0.0.0.0
+  xpack.security.trasnport.ssl.client_authentication: "none"
+  xpack.security.http.ssl.client_authentication: "none"
+  xpack.monitoring.collection.enabled: true

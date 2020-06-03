@@ -16,6 +16,8 @@ all:
       ansible_host: 192.168.178.116
     kidney:
       ansible_host: 192.168.178.117
+    inbrine:
+      ansible_host: 192.168.178.118
   children:
     docker:
       children:
