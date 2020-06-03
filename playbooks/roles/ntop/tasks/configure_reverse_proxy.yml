@@ -1,0 +1,51 @@
+---
+- name: Remove default Apache2 site
+  file:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: absent
+
+- name: Create site configuration file
+  template:
+    src: 001-reverse-proxy.conf.j2
+    dest: /etc/apache2/sites-available/001-reverse-proxy.conf
+  notify: restart apache
+
+- name: Enable site
+  file:
+    path: /etc/apache2/sites-enabled/001-reverse-proxy.conf
+    src: /etc/apache2/sites-available/001-reverse-proxy.conf
+    state: link
+
+- name: Copy server certificate
+  copy:
+    src: ntop.l-space.local.crt
+    dest: "{{virtualhosts.tls.server_certificate_path}}"
+    mode: "0640"
+    owner: "root"
+    group: "root"
+  when: virtualhosts.tls is defined
+
+- name: Copy server certificate key
+  copy:
+    src: ntop.l-space.local.key
+    dest: "{{virtualhosts.tls.server_certificate_path}}"
+    mode: "0640"
+    owner: "root"
+    group: "root"
+  when: virtualhosts.tls is defined
+
+- name: create general config file
+  template:
+    src: apache2.conf.j2
+    dest: /etc/apache2/apache2.conf
+  notify: restart apache
+
+- name: enable modules
+  file:
+    src: "/etc/apache2/mods-available/{{item}}"
+    dest: "/etc/apache2/mods-enabled/{{item}}"
+    state: link
+  loop:
+    - ssl.load
+    - rewrite.load
+  notify: restart apache

@@ -1,0 +1,7 @@
+---
+- name: Install Apache2 and mod_proxy_uwsgi
+  apt:
+    name:
+     - apache2
+     - libapache2-mod-proxy-uwsgi
+    state: present
