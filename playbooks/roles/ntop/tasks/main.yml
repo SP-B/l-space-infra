@@ -1,3 +1,9 @@
 ---
 - name: Install Ntop
   include_tasks: install_ntop.yml
+
+- name: Install Apache2 reverse proxy
+  include_tasks: install_reverse_proxy.yml
+
+- name: Configure Apache2 reverse proxy
+  include_tasks: configure_reverse_proxy.yml

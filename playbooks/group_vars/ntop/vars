@@ -1,0 +1,22 @@
+# Reverse proxy settings
+virtualhosts:
+  - {
+      proxy_settings: { port:3000, virtualhostport: 80 },
+      servername: "ntop.l-space.local",
+      redirect_to_https: true
+    }
+  - {
+      tls:
+        {
+          apache_ssl_protocol: "All -SSLv2 -SSLv3",
+          apache_ssl_cipher_suite: "AES256+EECDH:AES256+EDH",
+          server_certificate_path: "/etc/apache2/ntop.l-space.local.crt",
+          intermediate_certificate_path: "/etc/apache2/signing-ca.crt",
+          server_key_path: "/etc/apache2/ntop.l-space.local.key",
+          server_certificate: "server.crt",
+          intermediate_certificate: "subca1.crt",
+          server_key: "server.key"
+        },
+      servername: "ntop.l-space.local",
+      proxy_settings: { port: 3000, virtualhostport: 443 }
+    }
